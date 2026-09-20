@@ -1,8 +1,8 @@
-import express, { Router, type Express } from 'express';
-
-const app: Express = express();
+import { Router } from 'express';
+import authRouter from './auth.routes.ts';
 
 const routes = Router();
 
+routes.use('/auth', authRouter);
 
 export default routes;
