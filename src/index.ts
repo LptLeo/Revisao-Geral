@@ -1,12 +1,14 @@
 import express from 'express';
 import type { Express } from 'express';
-import AppDataSource from './config/AppDataSource.ts';
-import { env } from './config/env.ts';
-import { errorHandler } from './middleware/GlobalErrorHandler.ts';
+import AppDataSource from './configs/AppDataSource.ts';
+import { env } from './configs/env.ts'
+import { errorHandler } from './middlewares/GlobalErrorHandler.ts';
+import routes from './routes/index.routes.ts';
 
 const app: Express = express();
 
 app.use(express.json());
+app.use(routes);
 app.use(errorHandler);
 
 async function initializeServer(): Promise<void> {

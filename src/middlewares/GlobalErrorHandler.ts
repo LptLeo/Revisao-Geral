@@ -19,7 +19,14 @@ export const errorHandler: ErrorRequestHandler = (
     if (error instanceof AppError) {
         return res.status(error.statusCode).json({
             status: "error",
-            message: "Erro interno do servidor"
+            message: error.message || "Erro interno não especificado",
         });
     }
+
+    console.error(error);
+
+    return res.status(500).json({
+        status: "error",
+        message: "Erro interno no servidor",
+    });
 }

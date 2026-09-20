@@ -36,6 +36,27 @@ const envSchema = z.object({
         .int("A variável SV_PORT precisa ser obrigatoriamente um número inteiro")
         .min(1, "A variável SV_PORT precisa ser obrigatoriamente preenchida")
         .max(65535, "A variável SV_PORT precisa ser obrigatoriamente menor que 65535"),
+
+    // AUTH ENVS
+    BCRYPT_SALT: z.coerce
+        .number("A variável BCRYPT_SALT precisa ser obrigatoriamente um number")
+        .default(12),
+
+    // JWT CONFIGS
+    JWT_SECRET: z
+        .string("A variável JWT_SECRET precisa ser obrigatoriamente uma string")
+        .min(64, "A variável JWT_SECRET precisa ter ao menos 20 caracteres"),
+    JWT_EXPIRES_IN: z
+        .string("A variável JWT_EXPIRES_IN precisa ser obrigatoriamente uma string")
+        .min(1, "A variável JWT_EXPIRES_IN precisa ter ao menos 20 caracteres")
+        .default("1d"),
+    JWT_REFRESH_SECRET: z
+        .string("A variável JWT_REFRESH_SECRET precisa ser obrigatoriamente uma string")
+        .min(64, "A variável JWT_REFRESH_SECRET precisa ter ao menos 20 caracteres"),
+    JWT_REFRESH_EXPIRES_IN: z
+        .string("A variável JWT_REFRESH_EXPIRES_IN precisa ser obrigatoriamente uma string")
+        .min(1, "A variável JWT_REFRESH_EXPIRES_IN precisa ter ao menos 20 caracteres")
+        .default("7d"),
 })
 
 const _env = envSchema.safeParse(process.env);
