@@ -9,7 +9,7 @@ export const UserRole = {
 
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 
-@Entity()
+@Entity("user")
 export class User {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
@@ -25,6 +25,9 @@ export class User {
 
     @Column({ type: "enum", enum: UserRole, default: "user" })
     role!: UserRole;
+
+    @Column({ type: "boolean", default: true })
+    active!: boolean;
 
     @OneToMany(() => Address, (address) => address.user)
     addresses!: Address[];
