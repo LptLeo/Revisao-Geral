@@ -1,0 +1,4 @@
+dist/
+node_modules/
+postman/*.postman_collection.json
+postman/*.postman_environment.json

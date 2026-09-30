@@ -7,7 +7,11 @@
     "dev": "tsx watch ./src/index.ts",
     "build": "tsc",
     "start": "node ./dist/index.js",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "validate-code": "tsc --noEmit && npm run lint && npm run format:check"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +20,7 @@
   "dependencies": {
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
@@ -24,10 +29,17 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.20.2",
+    "@typescript-eslint/eslint-plugin": "^8.70.1",
+    "@typescript-eslint/parser": "^8.70.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "prettier": "^3.9.9",
     "tsx": "^4.23.13",
-    "typescript": "^7.0.2"
+    "typescript": "^6.0.3"
   }
 }
