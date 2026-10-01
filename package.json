@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "start": "node ./dist/index.js",
     "typeorm": "typeorm-ts-node-commonjs",
     "lint": "eslint . --ext .ts",
@@ -13,7 +13,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "validate-code": "npm run test && tsc --noEmit -p tsconfig.eslint.json && npm run lint && npm run format:check"
+    "validate-code": "npm run test && tsc --noEmit -p tsconfig.json && npm run lint && npm run format:check"
   },
   "keywords": [],
   "author": "",
