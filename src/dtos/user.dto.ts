@@ -7,9 +7,11 @@ export const findByIdUserSchema = z.object({
 
 export type findByIdUserDTO = z.infer<typeof findByIdUserSchema>;
 
+import { emailSchema } from './auth.dto.ts';
+
 export const updateUserSchema = z.object({
   name: z.string('O nome deve ser uma string').min(1, 'O nome é obrigatório').optional(),
-  email: z.email('O email inserido é inválido').min(1, 'O email é obrigatório').optional(),
+  email: emailSchema('O email inserido é inválido').optional(),
   password: z.string('A senha deve ser uma string').min(1, 'A senha é obrigatória').optional(),
   role: z.enum(UserRole).optional(),
 });
