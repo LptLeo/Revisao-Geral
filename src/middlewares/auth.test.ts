@@ -10,7 +10,7 @@ describe('ensureRole', () => {
   it('rejects unauthenticated user', () => {
     const req = { user: undefined } as unknown as Request;
     const fn = ensureRole(['admin']);
-    expect(() => fn(req, makeRes(), makeNext())).toThrowError(
+    expect(() => fn(req, makeRes(), makeNext())).toThrow(
       expect.objectContaining({ statusCode: 401 })
     );
   });
@@ -18,7 +18,7 @@ describe('ensureRole', () => {
   it('rejects insufficient role', () => {
     const req = { user: { id: '1', name: 'Alice', role: 'user' } } as unknown as Request;
     const fn = ensureRole(['admin']);
-    expect(() => fn(req, makeRes(), makeNext())).toThrowError(
+    expect(() => fn(req, makeRes(), makeNext())).toThrow(
       expect.objectContaining({ statusCode: 403 })
     );
   });
@@ -36,7 +36,7 @@ describe('ensureOwner', () => {
   it('rejects unauthenticated user', () => {
     const req = { params: { id: '1' } } as unknown as Request;
     const fn = ensureOwner(['user']);
-    expect(() => fn(req, makeRes(), makeNext())).toThrowError(
+    expect(() => fn(req, makeRes(), makeNext())).toThrow(
       expect.objectContaining({ statusCode: 401 })
     );
   });
@@ -67,7 +67,7 @@ describe('ensureOwner', () => {
       params: { id: '2' },
     } as unknown as Request;
     const fn = ensureOwner(['user']);
-    expect(() => fn(req, makeRes(), makeNext())).toThrowError(
+    expect(() => fn(req, makeRes(), makeNext())).toThrow(
       expect.objectContaining({ statusCode: 403 })
     );
   });

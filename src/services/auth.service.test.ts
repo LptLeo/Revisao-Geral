@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { env } from '../configs/env.ts';
+import type { User } from '../entities/user.entity.ts';
 
 vi.mock('bcrypt', () => ({
   default: { hash: vi.fn(), compare: vi.fn() },
@@ -34,7 +35,7 @@ describe('AuthService', () => {
       repo.findOneBy.mockResolvedValue({ id: '1', email: 'a@b.com' });
       await expect(
         service.register({ name: 'A', email: 'a@b.com', password: 'x' })
-      ).rejects.toThrowError(expect.objectContaining({ statusCode: 409 }));
+      ).rejects.toThrow(expect.objectContaining({ statusCode: 409 }));
     });
 
     it('hashes password and saves new user', async () => {
@@ -64,7 +65,7 @@ describe('AuthService', () => {
       password: 'hashed-pw',
       role: 'user',
       active: true,
-    } as never;
+    } as unknown as User & { __test: never };
 
     beforeEach(() => {
       vi.mocked(jwt.sign).mockReturnValue('token' as never);
@@ -72,14 +73,14 @@ describe('AuthService', () => {
 
     it('rejects when user not found', async () => {
       repo.findOne.mockResolvedValue(null);
-      await expect(service.login({ email: 'x@x.com', password: 'y' })).rejects.toThrowError(
+      await expect(service.login({ email: 'x@x.com', password: 'y' })).rejects.toThrow(
         expect.objectContaining({ statusCode: 401 })
       );
     });
 
     it('rejects when user is inactive', async () => {
       repo.findOne.mockResolvedValue({ ...user, active: false });
-      await expect(service.login({ email: 'alice@test.com', password: 'y' })).rejects.toThrowError(
+      await expect(service.login({ email: 'alice@test.com', password: 'y' })).rejects.toThrow(
         expect.objectContaining({ statusCode: 403 })
       );
     });
@@ -88,9 +89,9 @@ describe('AuthService', () => {
       repo.findOne.mockResolvedValue(user);
       vi.mocked(bcrypt.compare).mockResolvedValue(false as never);
 
-      await expect(
-        service.login({ email: 'alice@test.com', password: 'wrong' })
-      ).rejects.toThrowError(expect.objectContaining({ statusCode: 401 }));
+      await expect(service.login({ email: 'alice@test.com', password: 'wrong' })).rejects.toThrow(
+        expect.objectContaining({ statusCode: 401 })
+      );
     });
 
     it('returns user without password and tokens on success', async () => {
@@ -111,7 +112,7 @@ describe('AuthService', () => {
         throw new Error('invalid');
       });
 
-      await expect(service.refreshToken('bad')).rejects.toThrowError(
+      await expect(service.refreshToken('bad')).rejects.toThrow(
         expect.objectContaining({ statusCode: 401 })
       );
     });
@@ -120,7 +121,7 @@ describe('AuthService', () => {
       vi.mocked(jwt.verify).mockReturnValue({ id: 'u1' } as never);
       repo.findOneBy.mockResolvedValue({ id: 'u1', active: false });
 
-      await expect(service.refreshToken('valid')).rejects.toThrowError(
+      await expect(service.refreshToken('valid')).rejects.toThrow(
         expect.objectContaining({ statusCode: 401 })
       );
     });

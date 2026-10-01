@@ -8,7 +8,6 @@ export default [
   },
   {
     files: ['src/**/*.ts'],
-    ignores: ['src/**/*.test.ts', 'dist/**', 'node_modules/**', '*.d.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -22,29 +21,21 @@ export default [
       prettier: prettierPlugin,
     },
     rules: {
-      'prettier/prettier': 'error',
+      'no-restricted-properties': [
+        'error',
+        {
+          property: 'toThrowError',
+          message: 'Use toThrow/toRejects.toThrow instead of toThrowError',
+        },
+      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/consistent-type-imports': 'error',
-    },
-    ignores: ['dist/', 'node_modules/', '*.config.*', '*.d.ts'],
-  },
-  {
-    files: ['src/**/*.test.ts'],
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      parser: tsParser,
-    },
-    plugins: {
-      prettier: prettierPlugin,
-    },
-    rules: {
       'prettier/prettier': 'error',
     },
-    ignores: ['dist/', 'node_modules/'],
+    ignores: ['dist/', 'node_modules/', '*.config.*', '*.d.ts'],
   },
 ];
