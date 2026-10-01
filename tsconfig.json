@@ -3,9 +3,6 @@
     "module": "nodenext",
     "target": "esnext",
     "types": [],
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
     "noUncheckedIndexedAccess": true,
     "strict": true,
     "jsx": "react-jsx",
@@ -14,13 +11,12 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "rewriteRelativeImportExtensions": true,
-    "erasableSyntaxOnly": true
+    "erasableSyntaxOnly": true,
+    "noEmit": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
+  "include": ["src/**/*.ts", "vitest.config.ts", "eslint.config.js"],
+  "exclude": ["node_modules", "dist"]
 }

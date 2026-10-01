@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch ./src/index.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "start": "node ./dist/index.js",
     "typeorm": "typeorm-ts-node-commonjs",
     "lint": "eslint . --ext .ts",
@@ -13,14 +13,14 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "validate-code": "npm run test && tsc --noEmit -p tsconfig.eslint.json && npm run lint && npm run format:check"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "validate-code": "npm run test && npm run typecheck && npm run lint && npm run format:check"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
@@ -31,10 +31,11 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^22.20.2",
+    "@types/node": "^22.20.4",
     "@typescript-eslint/eslint-plugin": "^8.70.1",
     "@typescript-eslint/parser": "^8.70.1",
     "eslint": "^10.11.0",
