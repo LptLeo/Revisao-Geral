@@ -11,7 +11,9 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "validate-code": "tsc --noEmit && npm run lint && npm run format:check"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate-code": "npm run test && tsc --noEmit && npm run lint && npm run format:check"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +42,7 @@
     "eslint-plugin-prettier": "^5.5.6",
     "prettier": "^3.9.9",
     "tsx": "^4.23.13",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.3"
   }
 }

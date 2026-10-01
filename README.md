@@ -132,6 +132,12 @@ Mapeamento de entidades com integridade referencial estrita e chaves estrangeira
 - Middleware genérico que intercepta o corpo da requisição (`validateBody`), descartando propriedades inesperadas e bloqueando requisições com dados incorretos.
 - Tratamento centralizado de erros em `GlobalErrorHandler`, mapeando automaticamente erros de validação (`ZodError`), regras de negócio (`AppError`) e falhas não esperadas (`500`).
 
+### 4. Testes Automatizados
+
+- **Testes unitários** com **Vitest** (`npm test`) cobrindo o núcleo de autenticação (`AuthService`, `ensureRole`, `ensureOwner`) com mocks de repositório — sem dependência de banco real.
+- **Testes de aceite (E2E)** via **Postman / Newman** na pasta `postman/` (`npm run test:e2e` — a ser implementado na TECH04).
+- Integração no CI: validação roda em todo PR (`validate-code` + testes).
+
 ### 4. Regras de Negócio e Concorrência (Roadmap)
 
 - Cálculo dinâmico de carrinho, aplicação de descontos por cupom e validações de elegibilidade.

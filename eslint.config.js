@@ -8,12 +8,13 @@ export default [
   },
   {
     files: ['src/**/*.ts'],
+    ignores: ['src/**/*.test.ts', 'dist/**', 'node_modules/**', '*.d.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       parser: tsParser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: './tsconfig.eslint.json',
       },
     },
     plugins: {
@@ -30,5 +31,20 @@ export default [
       '@typescript-eslint/consistent-type-imports': 'error',
     },
     ignores: ['dist/', 'node_modules/', '*.config.*', '*.d.ts'],
+  },
+  {
+    files: ['src/**/*.test.ts'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parser: tsParser,
+    },
+    plugins: {
+      prettier: prettierPlugin,
+    },
+    rules: {
+      'prettier/prettier': 'error',
+    },
+    ignores: ['dist/', 'node_modules/'],
   },
 ];
