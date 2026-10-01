@@ -138,7 +138,7 @@ Mapeamento de entidades com integridade referencial estrita e chaves estrangeira
 - **Testes de aceite (E2E)** via **Postman / Newman** na pasta `postman/` (`npm run test:e2e` — a ser implementado na TECH04).
 - Integração no CI: validação roda em todo PR (`validate-code` + testes).
 
-### 4. Regras de Negócio e Concorrência (Roadmap)
+### 5. Regras de Negócio e Concorrência (Roadmap)
 
 - Cálculo dinâmico de carrinho, aplicação de descontos por cupom e validações de elegibilidade.
 - Fechamento de pedidos com **transações de banco de dados** e controle de concorrência com bloqueio pessimista (`pessimistic lock`), prevenindo vendas inconsistentes quando múltiplos clientes disputam as últimas unidades de estoque.
