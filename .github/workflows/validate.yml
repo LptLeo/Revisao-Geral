@@ -25,11 +25,14 @@ jobs:
       - name: Tests (Vitest)
         run: npm run test
 
-      - name: TypeScript (tsc --noEmit)
-        run: npx tsc --noEmit
+      - name: TypeScript (typecheck)
+        run: npm run typecheck
 
       - name: ESLint
         run: npm run lint
 
       - name: Prettier (check)
         run: npm run format:check
+
+      - name: Build
+        run: npm run build
