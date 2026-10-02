@@ -108,6 +108,42 @@ Servidor rodando na porta 3000
 
 ---
 
+## 📝 Padrão de Commits
+
+Este projeto adota o padrão **[Conventional Commits](https://www.conventionalcommits.org/)** com as mensagens escritas em inglês.
+
+### Formato
+
+```text
+<tipo>: <descrição curta>
+```
+
+### Tipos aceitos
+
+`feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+
+### Exemplos
+
+```text
+feat: add refresh token rotation
+fix: prevent duplicate email on register
+docs: update setup instructions
+refactor: extract reusable email schema
+```
+
+### Validação automática
+
+- **Local (husky):** ao commitar, o hook `commit-msg` valida a mensagem e o hook `pre-commit` roda `npm run validate-code` (testes, typecheck, lint e formatação).
+- **CI:** pull requests passam por um job dedicado que valida todas as mensagens de commit do PR.
+
+Para testar uma mensagem manualmente:
+
+```bash
+echo "feat: add something" | npm run commitlint
+```
+
+---
+
 ## 🎯 Domínios e Estágios da Aplicação
 
 ### 1. Modelo Relacional e Entidades
