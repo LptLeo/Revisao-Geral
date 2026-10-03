@@ -1,8 +1,30 @@
 import * as z from 'zod';
+import ms, { type StringValue } from 'ms';
 
 try {
   process.loadEnvFile();
 } catch {}
+
+// O type predicate "valor is StringValue" avisa ao TypeScript: se esta função
+// retornar true, o Zod pode tratar o valor como StringValue (tipo do ms), o que
+// permite usar ms(env.JWT_EXPIRES_IN) sem cast no cookieConfig.ts
+function isDuracaoValida(valor: string): valor is StringValue {
+  try {
+    return typeof ms(valor as StringValue) === 'number';
+  } catch {
+    return false;
+  }
+}
+
+const durationSchema = (variable: string, fallback: StringValue) =>
+  z
+    .string(`A variável ${variable} precisa ser obrigatoriamente uma string`)
+    .min(1, `A variável ${variable} precisa ser preenchida`)
+    .refine(
+      isDuracaoValida,
+      `A variável ${variable} precisa ser uma duração válida (ex: '15m', '12h', '1d', '7d')`
+    )
+    .default(fallback);
 
 const envSchema = z.object({
   // GLOBAL ENVS
@@ -51,17 +73,11 @@ const envSchema = z.object({
   JWT_SECRET: z
     .string('A variável JWT_SECRET precisa ser obrigatoriamente uma string')
     .min(64, 'A variável JWT_SECRET precisa ter ao menos 20 caracteres'),
-  JWT_EXPIRES_IN: z
-    .string('A variável JWT_EXPIRES_IN precisa ser obrigatoriamente uma string')
-    .min(1, 'A variável JWT_EXPIRES_IN precisa ter ao menos 20 caracteres')
-    .default('1d'),
+  JWT_EXPIRES_IN: durationSchema('JWT_EXPIRES_IN', '1d'),
   JWT_REFRESH_SECRET: z
     .string('A variável JWT_REFRESH_SECRET precisa ser obrigatoriamente uma string')
     .min(64, 'A variável JWT_REFRESH_SECRET precisa ter ao menos 20 caracteres'),
-  JWT_REFRESH_EXPIRES_IN: z
-    .string('A variável JWT_REFRESH_EXPIRES_IN precisa ser obrigatoriamente uma string')
-    .min(1, 'A variável JWT_REFRESH_EXPIRES_IN precisa ter ao menos 20 caracteres')
-    .default('7d'),
+  JWT_REFRESH_EXPIRES_IN: durationSchema('JWT_REFRESH_EXPIRES_IN', '7d'),
 });
 
 const _env = envSchema.safeParse(process.env);

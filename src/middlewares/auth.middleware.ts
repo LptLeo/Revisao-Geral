@@ -2,10 +2,11 @@ import type { NextFunction, Request, Response } from 'express';
 import { AppError } from '../errors/AppError.ts';
 import jwt from 'jsonwebtoken';
 import { env } from '../configs/env.ts';
+import { AUTH_COOKIES } from '../configs/cookieConfig.ts';
 import type { UserPayload } from '../types/user.types.ts';
 
 export const ensureAuthenticated = (req: Request, _res: Response, next: NextFunction): void => {
-  let token = req.cookies?.accessToken;
+  let token = req.cookies?.[AUTH_COOKIES.accessToken];
 
   if (!token && req.headers.authorization) {
     const [scheme, headerToken] = req.headers.authorization.split(' ');
