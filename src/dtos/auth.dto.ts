@@ -17,13 +17,3 @@ export const loginUserSchema = z.object({
 });
 
 export type loginUserDTO = z.infer<typeof loginUserSchema>;
-
-export const refreshTokenSchema = z.object({
-  refreshToken: z
-    .string('O refreshToken deve ser uma string')
-    .min(1, 'O token não pode estar vazio')
-    .max(8192, 'O token é grande demais (máximo de 8KB)')
-    .regex(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+$/, 'Formato de JWT inválido'),
-});
-
-export type refreshTokenDTO = z.infer<typeof refreshTokenSchema>;

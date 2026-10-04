@@ -712,28 +712,10 @@
           ]
         },
         {
-          "name": "Refresh · Token válido → 200",
+          "name": "Refresh · Token válido → 204",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Cookie",
-                "value": "refreshToken={{refreshToken}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
+            "header": [],
             "url": {
               "raw": "{{base_url}}/auth/refresh",
               "host": [
@@ -751,8 +733,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Retorna novo accessToken', () => pm.expect(pm.response.json()).to.have.property('accessToken'));"
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));",
+                  "pm.test('Sem body', () => pm.expect(pm.response.text()).to.be.empty);",
+                  "pm.test('Cookie accessToken emitido', () => {",
+                  "  const cookie = pm.response.headers.find(h => h.key === 'Set-Cookie' && h.value.startsWith('accessToken='));",
+                  "  pm.expect(cookie).to.exist;",
+                  "});"
                 ]
               }
             }
@@ -764,23 +750,10 @@
             "method": "POST",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
                 "key": "Cookie",
                 "value": "refreshToken=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImZha2UifQ.invalidsignature"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImZha2UifQ.invalidsignature\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
               "raw": "{{base_url}}/auth/refresh",
               "host": [
