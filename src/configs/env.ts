@@ -72,11 +72,11 @@ const envSchema = z.object({
   // JWT CONFIGS
   JWT_SECRET: z
     .string('A variável JWT_SECRET precisa ser obrigatoriamente uma string')
-    .min(64, 'A variável JWT_SECRET precisa ter ao menos 20 caracteres'),
+    .min(64, 'A variável JWT_SECRET precisa ter ao menos 64 caracteres'),
   JWT_EXPIRES_IN: durationSchema('JWT_EXPIRES_IN', '1d'),
   JWT_REFRESH_SECRET: z
     .string('A variável JWT_REFRESH_SECRET precisa ser obrigatoriamente uma string')
-    .min(64, 'A variável JWT_REFRESH_SECRET precisa ter ao menos 20 caracteres'),
+    .min(64, 'A variável JWT_REFRESH_SECRET precisa ter ao menos 64 caracteres'),
   JWT_REFRESH_EXPIRES_IN: durationSchema('JWT_REFRESH_EXPIRES_IN', '7d'),
 });
 
