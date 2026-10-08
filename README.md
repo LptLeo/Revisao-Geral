@@ -23,7 +23,7 @@ O projeto foi estruturado para simular o backend de um e-commerce em ambiente de
 
 A API adota uma **Arquitetura em Camadas (Layered Architecture)** para garantir separação clara de responsabilidades, testabilidade e facilidade de manutenção:
 
-- **Middlewares (`src/middlewares/`):** Interceptam requisições antes de chegarem ao fluxo principal. Contam com uma fábrica de validação genérica com Zod (`validateBody`), tratamento de funções assíncronas (`asyncHandler`) e um manipulador global de erros (`GlobalErrorHandler`).
+- **Middlewares (`src/middlewares/`):** Interceptam requisições antes de chegarem ao fluxo principal. Contam com uma fábrica de validação genérica com Zod (`validateBody`), um manipulador global de erros (`GlobalErrorHandler`) e o `asyncHandler`, que envolve **todos os handlers assíncronos** (controllers e o middleware de autenticação) para delegar rejeições de promises ao tratador global de forma uniforme.
 - **Controllers (`src/controllers/`):** Recebem as requisições HTTP, orquestram o fluxo de entrada e devolvem a resposta formatada com o status HTTP adequado.
 - **Services (`src/services/`):** Isolam todas as regras de negócio da aplicação. São independentes do framework web e conversam diretamente com a camada de persistência.
 - **DTOs & Schemas (`src/dtos/`):** Definem os contratos de dados esperados pela API e garantem validação e sanitização dos dados antes de qualquer processamento.
