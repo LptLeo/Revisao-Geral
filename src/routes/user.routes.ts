@@ -7,17 +7,18 @@ import { findByIdUserSchema } from '../dtos/user.dto.ts';
 import { ensureRole } from '../middlewares/role.middleware.ts';
 import { ensureOwner } from '../middlewares/owner.middleware.ts';
 import { validateParams } from '../middlewares/validateParams.middleware.ts';
+import { asyncHandler } from '../middlewares/asyncHandler.middleware.ts';
 
 const userService = new UserService(AppDataSource.getRepository(User));
 const userController = new UserController(userService);
 const userRouter = Router();
 
-userRouter.get('/', ensureRole(['admin']), userController.findAll);
+userRouter.get('/', ensureRole(['admin']), asyncHandler(userController.findAll));
 userRouter.get(
   '/:id',
   ensureOwner(['user']),
   validateParams(findByIdUserSchema),
-  userController.findById
+  asyncHandler(userController.findById)
 );
 
 export default userRouter;
