@@ -20,4 +20,11 @@ export class UserController {
 
     return res.status(200).json(user);
   };
+
+  public update = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const user = await this.userService.updateUser({ id: id as string }, req.body, req.user!);
+
+    return res.status(200).json(user);
+  };
 }
