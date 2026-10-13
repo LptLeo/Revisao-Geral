@@ -4,7 +4,6 @@ import { AppError } from '../errors/AppError.ts';
 import { type findByIdUserDTO, type updateUserDTO } from '../dtos/user.dto.ts';
 import bcrypt from 'bcrypt';
 import { env } from '../configs/env.ts';
-import type { UserPayload } from '../types/user.types.ts';
 
 export class UserService {
   private userRepository: Repository<User>;
@@ -23,16 +22,9 @@ export class UserService {
 
   public async updateUser(
     userId: findByIdUserDTO,
-    payload: updateUserDTO,
-    requester: UserPayload
+    payload: updateUserDTO
   ): Promise<Omit<User, 'password'>> {
     const user = await this.findEntityById(userId);
-
-    if (requester.role === 'admin') {
-      if (payload.role && (user.role === 'admin' || requester.id === userId.id)) {
-        throw new AppError('Admin não pode alterar role de outro admin ou de si mesmo', 403);
-      }
-    }
 
     if (payload.email && payload.email !== user.email) {
       const existing = await this.userRepository.findOneBy({ email: payload.email });
