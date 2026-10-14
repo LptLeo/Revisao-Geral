@@ -78,6 +78,7 @@ describe('UserService', () => {
 
       await service.findAll({ page: 1, limit: 10, search: 'joao' });
 
+      expect(repo.findAndCount).toHaveBeenCalledOnce();
       const options = repo.findAndCount.mock.calls[0]![0];
       expect(options.where).toHaveLength(2);
       expect(options.where[0].name.value).toBe('%joao%');
@@ -89,6 +90,7 @@ describe('UserService', () => {
 
       await service.findAll({ page: 1, limit: 10, search: 'joao', role: 'user', active: false });
 
+      expect(repo.findAndCount).toHaveBeenCalledOnce();
       const options = repo.findAndCount.mock.calls[0]![0];
       expect(options.where[0]).toMatchObject({ role: 'user', active: false });
       expect(options.where[1]).toMatchObject({ role: 'user', active: false });
@@ -99,6 +101,7 @@ describe('UserService', () => {
 
       await service.findAll({ page: 1, limit: 10, role: 'admin', active: true });
 
+      expect(repo.findAndCount).toHaveBeenCalledOnce();
       const options = repo.findAndCount.mock.calls[0]![0];
       expect(Array.isArray(options.where)).toBe(false);
       expect(options.where).toMatchObject({ role: 'admin', active: true });
@@ -109,6 +112,7 @@ describe('UserService', () => {
 
       await service.findAll({ page: 1, limit: 10 });
 
+      expect(repo.findAndCount).toHaveBeenCalledOnce();
       const options = repo.findAndCount.mock.calls[0]![0];
       expect(options.where).toEqual({});
     });
