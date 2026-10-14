@@ -1,7 +1,9 @@
-import type { Repository } from 'typeorm';
+import type { FindOptionsWhere, Repository } from 'typeorm';
+import { ILike } from 'typeorm';
 import type { User } from '../entities/user.entity.ts';
 import { AppError } from '../errors/AppError.ts';
-import { type findByIdUserDTO, type updateUserDTO } from '../dtos/user.dto.ts';
+import { type findByIdUserDTO, type listUsersDTO, type updateUserDTO } from '../dtos/user.dto.ts';
+import type { Paginated } from '../types/pagination.types.ts';
 import bcrypt from 'bcrypt';
 import { env } from '../configs/env.ts';
 
@@ -12,8 +14,35 @@ export class UserService {
     this.userRepository = userRepository;
   }
 
-  public async findAll(): Promise<Omit<User, 'password'>[]> {
-    return this.userRepository.find();
+  public async findAll(query: listUsersDTO): Promise<Paginated<Omit<User, 'password'>>> {
+    const { page, limit, search, role, active } = query;
+
+    const baseWhere: FindOptionsWhere<User> = {
+      ...(role !== undefined ? { role } : {}),
+      ...(active !== undefined ? { active } : {}),
+    };
+
+    const where: FindOptionsWhere<User> | FindOptionsWhere<User>[] = search
+      ? [
+          { ...baseWhere, name: ILike(`%${search}%`) },
+          { ...baseWhere, email: ILike(`%${search}%`) },
+        ]
+      : baseWhere;
+
+    const [users, total] = await this.userRepository.findAndCount({
+      where,
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data: users.map(({ password: _password, ...user }) => user),
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   public async findById(userId: findByIdUserDTO): Promise<Omit<User, 'password'>> {
