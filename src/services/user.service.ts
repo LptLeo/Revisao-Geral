@@ -26,7 +26,7 @@ export class UserService {
   ): Promise<Omit<User, 'password'>> {
     const user = await this.findEntityById(userId);
 
-    if (payload.email && payload.email != user.email) {
+    if (payload.email && payload.email !== user.email) {
       const existing = await this.userRepository.findOneBy({ email: payload.email });
 
       if (existing) throw new AppError('E-mail já está em uso', 409);
