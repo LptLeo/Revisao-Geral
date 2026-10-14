@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import type { UserService } from '../services/user.service.ts';
+import type { listUsersDTO } from '../dtos/user.dto.ts';
 
 export class UserController {
   private readonly userService: UserService;
@@ -9,9 +10,10 @@ export class UserController {
   }
 
   public findAll = async (req: Request, res: Response) => {
-    const allUsers = await this.userService.findAll();
+    const query = res.locals.query as listUsersDTO;
+    const result = await this.userService.findAll(query);
 
-    return res.status(200).json(allUsers);
+    return res.status(200).json(result);
   };
 
   public findById = async (req: Request, res: Response) => {

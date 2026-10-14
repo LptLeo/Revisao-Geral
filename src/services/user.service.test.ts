@@ -10,12 +10,14 @@ vi.mock('bcrypt', () => ({
 
 type MockUserRepository = {
   findOneBy: ReturnType<typeof vi.fn>;
+  findAndCount: ReturnType<typeof vi.fn>;
   merge: ReturnType<typeof vi.fn>;
   save: ReturnType<typeof vi.fn>;
 };
 
 const mockRepo = (): MockUserRepository => ({
   findOneBy: vi.fn(),
+  findAndCount: vi.fn(),
   merge: vi.fn(),
   save: vi.fn(),
 });
@@ -37,6 +39,87 @@ describe('UserService', () => {
     vi.clearAllMocks();
     repo = mockRepo();
     service = new UserService(repo as unknown as Repository<User>);
+  });
+
+  describe('findAll (US05)', () => {
+    const users = [
+      { ...baseUser, id: 'id-1', password: 'hash-1' },
+      { ...baseUser, id: 'id-2', password: 'hash-2' },
+    ] as User[];
+
+    it('retorna dados paginados com metadados corretos', async () => {
+      repo.findAndCount.mockResolvedValue([users, 25]);
+
+      const result = await service.findAll({ page: 2, limit: 10 });
+
+      expect(repo.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skip: 10,
+          take: 10,
+          order: { createdAt: 'DESC' },
+        })
+      );
+      expect(result).toMatchObject({ page: 2, limit: 10, total: 25, totalPages: 3 });
+      expect(result.data).toHaveLength(2);
+    });
+
+    it('não expõe o campo password nos dados retornados', async () => {
+      repo.findAndCount.mockResolvedValue([users, 2]);
+
+      const result = await service.findAll({ page: 1, limit: 10 });
+
+      for (const user of result.data) {
+        expect(user).not.toHaveProperty('password');
+      }
+    });
+
+    it('aplica busca por ILike em nome OU e-mail', async () => {
+      repo.findAndCount.mockResolvedValue([[], 0]);
+
+      await service.findAll({ page: 1, limit: 10, search: 'joao' });
+
+      const options = repo.findAndCount.mock.calls[0]![0];
+      expect(options.where).toHaveLength(2);
+      expect(options.where[0].name.value).toBe('%joao%');
+      expect(options.where[1].email.value).toBe('%joao%');
+    });
+
+    it('combina busca com os filtros de role e active', async () => {
+      repo.findAndCount.mockResolvedValue([[], 0]);
+
+      await service.findAll({ page: 1, limit: 10, search: 'joao', role: 'user', active: false });
+
+      const options = repo.findAndCount.mock.calls[0]![0];
+      expect(options.where[0]).toMatchObject({ role: 'user', active: false });
+      expect(options.where[1]).toMatchObject({ role: 'user', active: false });
+    });
+
+    it('aplica filtros de role e active sem busca', async () => {
+      repo.findAndCount.mockResolvedValue([[], 0]);
+
+      await service.findAll({ page: 1, limit: 10, role: 'admin', active: true });
+
+      const options = repo.findAndCount.mock.calls[0]![0];
+      expect(Array.isArray(options.where)).toBe(false);
+      expect(options.where).toMatchObject({ role: 'admin', active: true });
+    });
+
+    it('não aplica nenhum where quando não há filtros', async () => {
+      repo.findAndCount.mockResolvedValue([[], 0]);
+
+      await service.findAll({ page: 1, limit: 10 });
+
+      const options = repo.findAndCount.mock.calls[0]![0];
+      expect(options.where).toEqual({});
+    });
+
+    it('retorna lista vazia com total 0 e totalPages 0', async () => {
+      repo.findAndCount.mockResolvedValue([[], 0]);
+
+      const result = await service.findAll({ page: 1, limit: 10 });
+
+      expect(result).toMatchObject({ data: [], total: 0, totalPages: 0 });
+    });
   });
 
   describe('updateUser', () => {
