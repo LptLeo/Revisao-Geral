@@ -76,6 +76,26 @@ export class UserService {
     return userWithoutPassword;
   }
 
+  public async deactivateUser(userId: findByIdUserDTO, requesterId: string): Promise<void> {
+    if (userId.id === requesterId) {
+      throw new AppError('Administradores não podem desativar a própria conta', 400);
+    }
+
+    const user = await this.findEntityById(userId);
+
+    if (user.role === 'admin') {
+      throw new AppError('Não é permitido desativar a conta de outro administrador', 403);
+    }
+
+    if (!user.active) {
+      throw new AppError('Esta conta já está desativada', 400);
+    }
+
+    user.active = false;
+
+    await this.userRepository.save(user);
+  }
+
   private async findEntityById(userId: findByIdUserDTO): Promise<User> {
     const user = await this.userRepository.findOneBy({ id: userId.id });
 

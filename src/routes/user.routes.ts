@@ -34,5 +34,11 @@ userRouter.put(
   validateBody(updateUserSchema),
   asyncHandler(userController.update)
 );
+userRouter.delete(
+  '/:id',
+  ensureRole(['admin']),
+  validateParams(findByIdUserSchema),
+  asyncHandler(userController.deactivate)
+);
 
 export default userRouter;
