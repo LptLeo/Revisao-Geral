@@ -199,4 +199,60 @@ describe('UserService', () => {
       expect(bcrypt.hash).not.toHaveBeenCalled();
     });
   });
+
+  describe('deactivateUser (US06)', () => {
+    it('desativa a conta (soft delete) e persiste com active false', async () => {
+      const target = { ...baseUser, id: 'user-2' } as User;
+      repo.findOneBy.mockResolvedValue(target);
+      repo.save.mockImplementation(async (user: User) => user);
+
+      await service.deactivateUser({ id: 'user-2' }, 'admin-1');
+
+      expect(repo.save).toHaveBeenCalledOnce();
+      expect(repo.save).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'user-2', active: false })
+      );
+    });
+
+    it('rejeita auto-desativação com 400 antes de consultar o banco', async () => {
+      await expect(service.deactivateUser({ id: 'admin-1' }, 'admin-1')).rejects.toMatchObject({
+        name: 'AppError',
+        statusCode: 400,
+      });
+      expect(repo.findOneBy).not.toHaveBeenCalled();
+      expect(repo.save).not.toHaveBeenCalled();
+    });
+
+    it('rejeita a desativação de outro administrador com 403', async () => {
+      const otherAdmin = { ...baseUser, id: 'admin-2', role: 'admin' } as User;
+      repo.findOneBy.mockResolvedValue(otherAdmin);
+
+      await expect(service.deactivateUser({ id: 'admin-2' }, 'admin-1')).rejects.toMatchObject({
+        name: 'AppError',
+        statusCode: 403,
+      });
+      expect(repo.save).not.toHaveBeenCalled();
+    });
+
+    it('rejeita conta já desativada com 400', async () => {
+      const inactive = { ...baseUser, id: 'user-3', active: false } as User;
+      repo.findOneBy.mockResolvedValue(inactive);
+
+      await expect(service.deactivateUser({ id: 'user-3' }, 'admin-1')).rejects.toMatchObject({
+        name: 'AppError',
+        statusCode: 400,
+      });
+      expect(repo.save).not.toHaveBeenCalled();
+    });
+
+    it('lança AppError 404 quando o usuário não existe', async () => {
+      repo.findOneBy.mockResolvedValue(null);
+
+      await expect(service.deactivateUser({ id: 'user-9' }, 'admin-1')).rejects.toMatchObject({
+        name: 'AppError',
+        statusCode: 404,
+      });
+      expect(repo.save).not.toHaveBeenCalled();
+    });
+  });
 });

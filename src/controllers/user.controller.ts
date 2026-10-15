@@ -29,4 +29,11 @@ export class UserController {
 
     return res.status(200).json(user);
   };
+
+  public deactivate = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    await this.userService.deactivateUser({ id: id as string }, req.user!.id);
+
+    return res.status(204).send();
+  };
 }
